@@ -175,4 +175,16 @@
             android:summary="@string/setting_import_summary" >
         </Preference>
     </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
+        android:title="自定义内容"
+        >
+        <ListPreference
+            android:key="pref_language_change"
+            android:title="ChangeLanguage"
+            android:dialogTitle="Now language will keeping until restart this app"
+            android:entries="@array/pref_language_change_user"
+            android:entryValues="@array/pref_language_change_values"
+            android:defaultValue="en"/>
+    </androidx.preference.PreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

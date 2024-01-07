@@ -114,10 +114,14 @@ public class BaseActivity extends AppCompatActivity {
                         startActivity(intentpriv);
                         break;
 
+
+
                     case R.id.nav_settings:
                         Intent intentsettings = new Intent(BaseActivity.this, SettingsActivity.class);
                         startActivity(intentsettings);
                         break;
+
+
                     default:
                         Toast.makeText(BaseActivity.this, menuItem.getTitle() + " is not yet implemented :-(", Toast.LENGTH_LONG).show();
                         break;

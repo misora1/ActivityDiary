@@ -30,6 +30,7 @@ import de.rampro.activitydiary.ui.generic.DetailRecyclerViewAdapter;
 
 class HistoryViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
+
     private int mDiaryEntryId;
     private int mLoaderId = -1;
 

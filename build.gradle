@@ -22,9 +22,15 @@
 buildscript {
     repositories {
         google()
-        mavenCentral()
+        maven {
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
         if (project.file('ActivityDiarySigning.properties').exists()) {
-            mavenCentral()
+            maven {
+                allowInsecureProtocol = true
+                url 'http://maven.aliyun.com/nexus/content/groups/public/'
+            }
         }
     }
     dependencies {
@@ -35,6 +41,8 @@ buildscript {
         if (project.file('ActivityDiarySigning.properties').exists()) {
             classpath("com.github.triplet.gradle:play-publisher:3.6.0")
         }
+
+
     }
 }
 
@@ -45,7 +53,10 @@ allprojects {
 
     repositories {
         google()
-        mavenCentral()
+        maven {
+            allowInsecureProtocol = true
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
         jcenter()
         maven { url "https://jitpack.io" }
     }

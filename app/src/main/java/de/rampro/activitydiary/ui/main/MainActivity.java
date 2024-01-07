@@ -17,7 +17,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package de.rampro.activitydiary.ui.main;
-
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.Manifest;
 import android.app.SearchManager;
 import androidx.lifecycle.MutableLiveData;
@@ -78,6 +82,7 @@ import java.util.List;
 import de.rampro.activitydiary.ActivityDiaryApplication;
 import de.rampro.activitydiary.BuildConfig;
 import de.rampro.activitydiary.R;
+import de.rampro.activitydiary.alarmActivity2;
 import de.rampro.activitydiary.db.ActivityDiaryContract;
 import de.rampro.activitydiary.helpers.ActivityHelper;
 import de.rampro.activitydiary.helpers.DateHelper;
@@ -87,6 +92,7 @@ import de.rampro.activitydiary.model.DetailViewModel;
 import de.rampro.activitydiary.model.DiaryActivity;
 import de.rampro.activitydiary.ui.generic.BaseActivity;
 import de.rampro.activitydiary.ui.generic.EditActivity;
+import de.rampro.activitydiary.ui.history.HistoryActivity;
 import de.rampro.activitydiary.ui.history.HistoryDetailActivity;
 import de.rampro.activitydiary.ui.settings.SettingsActivity;
 
@@ -125,6 +131,7 @@ public class MainActivity extends BaseActivity implements
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private View headerView;
+    private boolean initialStateChanged = false;
 
     private void setSearchMode(boolean searchMode){
         if(searchMode){
@@ -171,6 +178,7 @@ public class MainActivity extends BaseActivity implements
         View contentView = inflater.inflate(R.layout.activity_main_content, null, false);
 
         setContent(contentView);
+        initialStateChanged=false;
 
         headerView = findViewById(R.id.header_area);
         tabLayout = findViewById(R.id.tablayout);
@@ -392,9 +400,6 @@ public class MainActivity extends BaseActivity implements
                 }
             });
             undoSnackBar.show();
-        }else{
-            /* clicked the currently active activity in the list, so let's terminate it due to #176 */
-            ActivityHelper.helper.setCurrentActivity(null);
         }
     }
 
@@ -441,8 +446,10 @@ public class MainActivity extends BaseActivity implements
                 col = ActivityDiaryApplication.getAppContext().getResources().getColor(R.color.colorPrimary, null);
             }else {
                 col = ActivityDiaryApplication.getAppContext().getResources().getColor(R.color.colorPrimary);
-            }
+            }if (aName.getText()!=getResources().getString(R.string.activity_title_no_selected_act)){
             aName.setText(getResources().getString(R.string.activity_title_no_selected_act));
+            showCustomToast(getResources().getString(R.string.success_accumulated_point), 3000);
+            }
             findViewById(R.id.activity_background).setBackgroundColor(col);
             aName.setTextColor(GraphicsHelper.textColorOnBackground(col));
             viewModel.mDuration.setValue("-");
@@ -450,6 +457,20 @@ public class MainActivity extends BaseActivity implements
         }
         selectorLayoutManager.scrollToPosition(0);
     }
+    private void showCustomToast(String message, int duration) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout, findViewById(R.id.toast_layout));
+
+        TextView toastText = layout.findViewById(R.id.toast_text);
+        toastText.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.setDuration(duration);
+        toast.setView(layout);
+        toast.show();
+    }
+    // Inside your MainActivity class
 
     public void queryAllTotals() {
         // TODO: move this into the DetailStatFragement
@@ -532,6 +553,7 @@ public class MainActivity extends BaseActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        initialStateChanged=false;
 
         // Get the SearchView and set the searchable configuration
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -554,6 +576,12 @@ public class MainActivity extends BaseActivity implements
             case R.id.action_add_activity:
                 startActivity(new Intent(this, EditActivity.class));
                 break;
+            case R.id.action_goto_another_activity: // 新增的菜单项 ID
+                // 在这里添加跳转逻辑
+                Intent intent = new Intent(this, alarmActivity2.class); // 替换为你想要跳转的 Activity
+                startActivity(intent);
+                break;
+
             /* filtering is handled by the SearchView widget
             case R.id.action_filter:
             */

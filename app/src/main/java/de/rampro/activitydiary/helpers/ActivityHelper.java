@@ -371,6 +371,7 @@ public class ActivityHelper extends AsyncQueryHandler{
 
                 for(DataChangedListener listener : mDataChangeListeners) {
                     listener.onActivityChanged();
+                    
                 }
             }else if(token == UNDELETE_ACTIVITY){
 

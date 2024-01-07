@@ -25,7 +25,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +39,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +51,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Date;
+import java.util.Locale;
 
 import de.rampro.activitydiary.ActivityDiaryApplication;
 import de.rampro.activitydiary.R;
@@ -55,6 +61,7 @@ import de.rampro.activitydiary.db.ActivityDiaryContract;
 import de.rampro.activitydiary.db.LocalDBHelper;
 import de.rampro.activitydiary.helpers.ActivityHelper;
 import de.rampro.activitydiary.ui.generic.BaseActivity;
+import de.rampro.activitydiary.ui.statistics.StatisticsActivity;
 
 public class SettingsActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = SettingsActivity.class.getName();
@@ -77,6 +84,7 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
     public static final String KEY_PREF_LOCATION_DIST = "pref_location_dist";
     public static final String KEY_PREF_PAUSED = "pref_cond_paused";
     public static final String KEY_PREF_DURATION_FORMAT = "pref_duration_format";
+    public static final String KEY_PREF_LANGUAGE = "pref_language_change";
 
     public static final int ACTIVITIY_RESULT_EXPORT = 17;
     public static final int ACTIVITIY_RESULT_IMPORT = 18;
@@ -211,12 +219,11 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         String value = PreferenceManager
                 .getDefaultSharedPreferences(ActivityDiaryApplication.getAppContext())
                 .getString(KEY_PREF_LOCATION_DIST, def);
-        if(value.length() == 0){
-            value = "0";
-        }
 
         int v = Integer.parseInt(value.replaceAll("\\D",""));
-
+        if(v < 5){
+            v = 5;
+        }
         String nvalue = Integer.toString(v);
         if(!value.equals(nvalue)){
             SharedPreferences.Editor editor = PreferenceManager
@@ -236,9 +243,6 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         String value = PreferenceManager
                 .getDefaultSharedPreferences(ActivityDiaryApplication.getAppContext())
                 .getString(KEY_PREF_LOCATION_AGE, def);
-        if(value.length() == 0){
-            value = "5";
-        }
         int v = Integer.parseInt(value.replaceAll("\\D",""));
         if(v < 2){
             v = 2;
@@ -383,12 +387,43 @@ public class SettingsActivity extends BaseActivity implements SharedPreferences.
         }
         ActivityHelper.helper.showCurrentActivityNotification();
     }
-
+    private void updateLanguage(Resources res,Locale local){
+        try {
+            Configuration config=res.getConfiguration();
+            config.setLocale(local);
+            res.updateConfiguration(config,res.getDisplayMetrics());
+        }
+        catch(Exception e){
+            Log.v("languageAbout",e.getClass().toString());
+        }
+    }
+    public static void updateLanguage(Resources res){
+        try {
+            DisplayMetrics dm=res.getDisplayMetrics();
+            String nowLan=PreferenceManager
+                    .getDefaultSharedPreferences(ActivityDiaryApplication.getAppContext())
+                    .getString(KEY_PREF_LANGUAGE, "en");
+            Locale local=null;
+            switch(nowLan){
+                case "en":local=Locale.ENGLISH;break;
+                case "kr":local=Locale.KOREAN;break;
+                case "zh":local=Locale.CHINESE;break;
+                case "ja":local=Locale.JAPANESE;break;
+                case "fr":local=Locale.FRENCH;break;
+            }
+            Configuration config = res.getConfiguration();
+            config.setLocale(local);
+            res.updateConfiguration(config,dm);
+        }
+        catch (Exception e){
+            Log.v("languageAbout", e.getClass().toString());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        SettingsActivity.updateLanguage(getResources());
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View contentView = inflater.inflate(R.layout.activity_settings, null, false);

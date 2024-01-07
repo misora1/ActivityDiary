@@ -92,7 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/note"
                 android:scrollbars="none"/>
-
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
+

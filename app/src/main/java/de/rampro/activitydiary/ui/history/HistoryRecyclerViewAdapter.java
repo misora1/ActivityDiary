@@ -45,6 +45,7 @@ import de.rampro.activitydiary.ui.generic.DetailRecyclerViewAdapter;
 import de.rampro.activitydiary.ui.settings.SettingsActivity;
 
 public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryViewHolders> {
+
     private Cursor mCursor;
     private HistoryActivity mContext;
     private DataSetObserver mDataObserver;
@@ -242,5 +243,74 @@ public class HistoryRecyclerViewAdapter extends RecyclerView.Adapter<HistoryView
         endRowIdx = mCursor.getColumnIndex(ActivityDiaryContract.Diary.END);
         noteRowIdx = mCursor.getColumnIndex(ActivityDiaryContract.Diary.NOTE);
     }
+    public int getTodayDiaryCount() {
+        Calendar today = Calendar.getInstance();
+        int count = 0;
+
+        if (mCursor != null && mCursor.moveToFirst()) {
+            do {
+                long startTime = mCursor.getLong(startRowIdx);
+                Calendar startCal = Calendar.getInstance();
+                startCal.setTimeInMillis(startTime);
+
+                if (isSameDay(today, startCal)) {
+                    count++;
+                }
+            } while (mCursor.moveToNext());
+        }
+
+        return count;
+    }
+    public int getYesterdayDiaryCount() {
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        int count = 0;
+
+        if (mCursor != null && mCursor.moveToFirst()) {
+            do {
+                long startTime = mCursor.getLong(startRowIdx);
+                Calendar startCal = Calendar.getInstance();
+                startCal.setTimeInMillis(startTime);
+
+                if (isSameDay(yesterday, startCal)) {
+                    count++;
+                }
+            } while (mCursor.moveToNext());
+        }
+
+        return count;
+    }
+    public int getLastWeekDiaryCount() {
+        Calendar lastWeekStart = Calendar.getInstance();
+        lastWeekStart.add(Calendar.WEEK_OF_YEAR, -1);
+        lastWeekStart.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        Calendar lastWeekEnd = Calendar.getInstance();
+        lastWeekEnd.add(Calendar.WEEK_OF_YEAR, -1);
+        lastWeekEnd.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+
+        int count = 0;
+
+        if (mCursor != null && mCursor.moveToFirst()) {
+            do {
+                long startTime = mCursor.getLong(startRowIdx);
+                Calendar startCal = Calendar.getInstance();
+                startCal.setTimeInMillis(startTime);
+
+                if (startCal.after(lastWeekStart) && startCal.before(lastWeekEnd)) {
+                    count++;
+                }
+            } while (mCursor.moveToNext());
+        }
+
+        return count;
+    }
+
+    private boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
 
 }

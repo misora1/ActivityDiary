@@ -160,9 +160,40 @@ public class HistoryActivity extends BaseActivity implements
 
     protected QHandler mQHandler = new QHandler();
 
+    private void updateCountTextViews() {
+        int todayCount = historyAdapter.getTodayDiaryCount();
+        int yesterdayCount = historyAdapter.getYesterdayDiaryCount();
+
+
+        TextView todayCountTextView = findViewById(R.id.todayCountTextView);
+        TextView yesterdayCountTextView = findViewById(R.id.yesterdayCountTextView);
+
+
+        todayCountTextView.setText("Today: " + todayCount);
+        yesterdayCountTextView.setText("Yesterday: " + yesterdayCount);
+    }
+    public void toggleVisibility(View view) {
+        android.widget.Button toggleButton = findViewById(R.id.toggleButton);
+        TextView textView1 = findViewById(R.id.todayCountTextView);
+        TextView textView2 = findViewById(R.id.yesterdayCountTextView);
+
+
+        // 切换 textView1 的可见性
+        textView1.setVisibility(textView1.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+        // 切换 textView2 的可见性
+        textView2.setVisibility(textView2.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+
+
+        toggleButton.setText(textView1.getVisibility() == View.VISIBLE ? "Hide" : "Show");
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         detailAdapters = new DetailRecyclerViewAdapter[5];
 
@@ -190,6 +221,8 @@ public class HistoryActivity extends BaseActivity implements
 
         // Get the intent, verify the action and get the query
         handleIntent(getIntent());
+
+
     }
 
     @Override
@@ -411,6 +444,7 @@ public class HistoryActivity extends BaseActivity implements
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         int i = loader.getId();
+        updateCountTextViews();
         if (i == LOADER_ID_HISTORY) {
             historyAdapter.swapCursor(data);
         } else {
@@ -453,7 +487,8 @@ public class HistoryActivity extends BaseActivity implements
     public void onResume() {
         mNavigationView.getMenu().findItem(R.id.nav_diary).setChecked(true);
         super.onResume();
-        historyAdapter.notifyDataSetChanged(); /* redraw the complete recyclerview to take care of e.g. date format changes in teh preferences etc. #36 */
+        historyAdapter.notifyDataSetChanged();
+        /* redraw the complete recyclerview to take care of e.g. date format changes in teh preferences etc. #36 */
     }
 
     public void addDetailAdapter(long diaryEntryId, DetailRecyclerViewAdapter adapter) {
