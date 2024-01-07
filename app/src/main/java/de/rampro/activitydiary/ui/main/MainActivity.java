@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 import android.app.SearchManager;
-import androidx.lifecycle.MutableLiveData;
+
 import androidx.lifecycle.ViewModelProviders;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -62,14 +62,10 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +78,7 @@ import java.util.List;
 import de.rampro.activitydiary.ActivityDiaryApplication;
 import de.rampro.activitydiary.BuildConfig;
 import de.rampro.activitydiary.R;
-import de.rampro.activitydiary.alarmActivity2;
+import de.rampro.activitydiary.AlarmActivity;
 import de.rampro.activitydiary.db.ActivityDiaryContract;
 import de.rampro.activitydiary.helpers.ActivityHelper;
 import de.rampro.activitydiary.helpers.DateHelper;
@@ -92,7 +88,6 @@ import de.rampro.activitydiary.model.DetailViewModel;
 import de.rampro.activitydiary.model.DiaryActivity;
 import de.rampro.activitydiary.ui.generic.BaseActivity;
 import de.rampro.activitydiary.ui.generic.EditActivity;
-import de.rampro.activitydiary.ui.history.HistoryActivity;
 import de.rampro.activitydiary.ui.history.HistoryDetailActivity;
 import de.rampro.activitydiary.ui.settings.SettingsActivity;
 
@@ -578,7 +573,7 @@ public class MainActivity extends BaseActivity implements
                 break;
             case R.id.action_goto_another_activity: // 新增的菜单项 ID
                 // 在这里添加跳转逻辑
-                Intent intent = new Intent(this, alarmActivity2.class); // 替换为你想要跳转的 Activity
+                Intent intent = new Intent(this, AlarmActivity.class); // 替换为你想要跳转的 Activity
                 startActivity(intent);
                 break;
 

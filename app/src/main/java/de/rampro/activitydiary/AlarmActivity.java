@@ -16,7 +16,7 @@ import android.content.Context;
 
 import de.rampro.activitydiary.ui.main.MainActivity;
 
-public class alarmActivity2 extends Activity {
+public class AlarmActivity extends Activity {
     private EditText editText;
     private TextView displayText;
 
@@ -108,7 +108,7 @@ public class alarmActivity2 extends Activity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mediaPlayer = MediaPlayer.create(alarmActivity2.this, R.raw.alarm_sound);
+                mediaPlayer = MediaPlayer.create(AlarmActivity.this, R.raw.alarm_sound);
 
                 // Ensure that the mediaPlayer is not null before starting
                 if (mediaPlayer != null) {

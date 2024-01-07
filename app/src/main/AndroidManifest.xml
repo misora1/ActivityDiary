@@ -69,7 +69,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".alarmActivity2"
+            android:name=".AlarmActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
